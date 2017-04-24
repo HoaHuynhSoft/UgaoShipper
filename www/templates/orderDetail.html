@@ -1,0 +1,76 @@
+<ion-view style="" class=" " id="page9" title="Chi tiết đơn hàng">
+    <ion-content class="has-header" padding="true">
+      <div class="card" style=" margin-top: 5px" >          
+          <div class="button-bar">
+            <a class="button button-small button-balanced" ng-if="isShowNhanButton" ng-click="confirm()">Nhận giao</a>
+            <a class="button button-small button-balanced" ng-if="isShowSuccessButton" ng-click="ConfirmSuccess()">Chuyển thành công</a>
+            <a class="button button-small button-dark" ng-if="isShowCancelButton" ng-click="ConfirmCancel()">Chuyển thất bại</a>
+          </div>
+      </div>
+       <div class="row text-center">
+          <div class = "col">
+            <p style="color: blueviolet; font-size: 16px;">
+              <strong> {{curOrder.Status}}</strong>
+             </p>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class = "col">
+            <p style="color: blueviolet; font-size: 16px;">
+          <strong> {{curOrder.Items.length}} Sản phẩm</strong>
+        </p>
+        </div>
+        <div class = "col">
+          <p style="color: blueviolet; font-size: 16px;">Tổng:
+          <strong> {{curOrder.Total| currency:"":0}}đ</strong>
+        </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="item item-divider item-icon-right" ng-click = "headerInfoClick()">
+          <i class="icon" ng-class="{'ion-ios-arrow-right':headerField,'ion-ios-arrow-down':!headerField}"></i>
+          Thông tin đặt hàng
+        </div>
+        <ion-list ng-show="!headerInfo">
+            <ion-item class = "item-remove-animate item-icon-left" >
+                <h2 style="font-size: 14px; white-space: normal;">Tên: {{curOrder.Name}}</h2>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </ion-item>
+            <ion-item class = "item-remove-animate item-icon-left" >
+                <a ng-href="tel: {{curOrder.PhoneNumber}}" style="color: green">SĐT: {{curOrder.PhoneNumber}}</a>
+                <i class="icon ion-ios-telephone-outline icon-balanced" style="color: green"></i>   
+            </ion-item>
+            <ion-item class = "item-remove-animate item-icon-left" >
+                <a href="https://www.google.com/maps/search/+{{curOrder.Address}}" style="color: green;font-size: 14px; white-space: normal;">Đ/c: {{curOrder.Address}}</a>
+                <i class="icon ion-chevron-right ion-ios-location-outline" style="color: green"></i>
+            </ion-item>
+            <ion-item class = "item-remove-animate item-icon-left" >
+                <h2 style="font-size: 14px; white-space: normal;">Ghi chú: {{curOrder.Note}}</h2>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </ion-item>
+        </ion-list>
+     </div>
+      
+      
+      <div ng-repeat="item in curOrder.OrderDetails track by $index"   >
+        <div class="list card" >
+          <div class="item item-body" >
+            <div class= "row">
+                <div class= "col col-50">
+                  <img ng-src="{{'img/'+ item.Item.image+'.jpg'}}" width="70%" height="auto" style="box-shadow: none;">
+                </div>
+                <div class= "col">
+                  <p style="margin-top: 5px; font-size: 12px"><strong> {{item.Item.name}}</strong></p>
+                  <p style="margin-top: 5px; font-size: 12px"><strong>Số bao: {{item.numOfKilogramType}}</strong></p>
+                  <p style="color: gray; font-size: 12px;" ><strong>Giá 1 kg: {{item.Item.price| currency:"":0}}đ</strong>
+                  <p style="color: gray; font-size: 12px;" ><strong>Thành tiền: {{item.numOfKilogramType*item.Item.price*item.kilogramType| currency:"":0}}đ</strong>
+                </div>
+						</div>
+          <div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
