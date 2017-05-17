@@ -35,7 +35,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
         console.log('error retrieving token: ' + err);
       }
     );
-    FCMPlugin.subscribeToTopic('host');
+    FCMPlugin.subscribeToTopic('shipper');
     FCMPlugin.onNotification(
       function(data){
         if(data.wasTapped){

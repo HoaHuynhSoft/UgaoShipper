@@ -31,7 +31,6 @@ angular.module('app.controllers', [])
               
               $window.localStorage['username'] = user.UserName;
               $window.localStorage['pass'] = user.Pass;
-              $window.localStorage['shipperID']=data._id;
               $rootScope.ShipperID=data._id;
               $rootScope.userName =data.FullName;
               $ionicHistory.nextViewOptions({
@@ -299,63 +298,40 @@ angular.module('app.controllers', [])
     };
 
 })
-.controller('reportCtrl', function($scope,$window,$rootScope,OrderService,sharedUtils) {
-
+.controller('reportCtrl', function($state,$scope,$rootScope,OrderService,sharedUtils,ReportService) {
+    $scope.ordersNew=[];
     $rootScope.extras=true;
-    var shipperID= $window.localStorage['shipperID'];//$rootScope.ShipperID;
-    console.log(shipperID);
     $scope.$on('$ionicView.enter', function(ev) {
-    $scope.orders = [];
-    $scope.ordersNew = [];
-    $scope.numOfOrder=0;
-    $scope.currency=0;
-    $scope.numOfOrderReceived=0;
-    $scope.currencyOfOrderReceived=0;
-    OrderService.getOrderByConfirmed()
-        .then(function success(data){
-           data.forEach(function(item, index){
-            if (item.Status === 2)
-                item.Status = "Đã xác nhận";
-           });
-           $scope.ordersNew = data;
-           sharedUtils.hideLoading();
-        }, function error(msg){
-          sharedUtils.showAlert("warning","Không lấy được danh sách đơn hàng, liên hệ 01649051057 để được hỗ trợ");
-            console.log(msg);
-            sharedUtils.hideLoading();
-        });
-    OrderService.getOrderByIDate(shipperID)
-        .then(function success(data){
-           data.forEach(function(item, index){
-                if (item.Status == 4)
-                {
-                  $scope.numOfOrder++;
-                  item.Status = "Thành công";
-                  $scope.orders.push(item);
-                  $scope.currency+=item.Total;
-                }
-                else if (item.Status == 0)
-                {
-                  $scope.numOfOrder++;
-                  item.Status = "Đã hủy";
-                  $scope.orders.push(item);
-                }
-                else if(item.Status==3)
-                {
-                  $scope.numOfOrderReceived++;
-                   $scope.currencyOfOrderReceived+=item.Total;
-                }
-           });
-           sharedUtils.hideLoading();
-        }, function error(msg){
-          sharedUtils.showAlert("warning","Không lấy được danh sách đơn hàng, liên hệ 01649051057 để được hỗ trợ");
-            console.log(msg);
-            sharedUtils.hideLoading();
-        });
-
-  });
-
-
-    
-
+      sharedUtils.showLoading()
+      console.log($rootScope.ShipperID);
+      OrderService.getOrderByConfirmed()
+        .then(function success(odata){
+          $scope.ordersNew=[];
+          odata.forEach(function(item, index){        
+            if (item.Status === 2){
+                item.StatusString = "Đã xác nhận";
+                $scope.ordersNew.push(item);
+            }             
+            });
+            $scope.numOrders = odata.length;
+            ReportService.getShipperReportedData($rootScope.ShipperID)
+              .then(function success(reportData){
+                sharedUtils.hideLoading();
+                $scope.reportData=reportData;
+                console.log( $scope.reportData);
+              },function error(err){
+                  console.log(err);
+                  sharedUtils.hideLoading();
+                  sharedUtils.showAlert("warning","Đã có lỗi xảy ra, liên hệ: 0873008888 để được hỗ trợ");
+              })
+            
+          }, function error(omsg){
+                console.log(omsg);
+                sharedUtils.hideLoading();
+                sharedUtils.showAlert("warning","Đã có lỗi xảy ra, liên hệ: 0873008888 để được hỗ trợ");
+          });
+    });
+    $scope.orderClick = function(_id){
+      $state.go('orderDetail',{id: _id});
+    }
 });
