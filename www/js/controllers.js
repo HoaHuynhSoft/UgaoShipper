@@ -82,6 +82,9 @@ angular.module('app.controllers', [])
     $rootScope.extras = true;
     $scope.noMoreItemsAvailable = true;
     $scope.$on('$ionicView.enter', function(ev) {
+      $scope.Init();
+    });
+    $scope.Init=function(){
       sharedUtils.showLoading();
       /*$scope.shipper= UserService.getCurShipper();
       console.log(JSON.stringify( $scope.shipper));*/
@@ -110,8 +113,11 @@ angular.module('app.controllers', [])
             console.log(msg);
             sharedUtils.hideLoading();
         });
-
-    });
+    }
+    $scope.doRefresh = function() {
+      $scope.Init();
+      $scope.$broadcast('scroll.refreshComplete');
+    };
     $scope.canGiaoClick = function(){
       $scope.isDisableDangNhan = false;
       $scope.isDisableCanGiao = true;
@@ -272,7 +278,8 @@ angular.module('app.controllers', [])
         $scope.isShowSaveButon = false;
         $state.go('orders');
       }, function error(msg){
-          sharedUtils.showAlert("warning","Đã có lỗi xảy ra!");
+          sharedUtils.showAlert("warning","Đơn hàng đã được nhận bởi Nhận viên khác");
+          $state.go('orders');
       });
     };
    
@@ -302,6 +309,9 @@ angular.module('app.controllers', [])
     $scope.ordersNew=[];
     $rootScope.extras=true;
     $scope.$on('$ionicView.enter', function(ev) {
+      $scope.Init();
+    });
+    $scope.Init=function(){
       sharedUtils.showLoading()
       console.log($rootScope.ShipperID);
       OrderService.getOrderByConfirmed()
@@ -330,8 +340,12 @@ angular.module('app.controllers', [])
                 sharedUtils.hideLoading();
                 sharedUtils.showAlert("warning","Đã có lỗi xảy ra, liên hệ: 0873008888 để được hỗ trợ");
           });
-    });
+    }
     $scope.orderClick = function(_id){
       $state.go('orderDetail',{id: _id});
     }
+    $scope.doRefresh = function() {
+      $scope.Init();
+      $scope.$broadcast('scroll.refreshComplete');
+    };
 });
