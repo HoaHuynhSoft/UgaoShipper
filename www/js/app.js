@@ -39,11 +39,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     FCMPlugin.onNotification(
       function(data){
         if(data.wasTapped){
-          if(data.type =="1")
+          if(data.type =="3")
             $state.go('orderDetail',{id: data.id});
-          else  if(data.type =="2")
-            $state.go('orders');
         }else{
+          var alertPopup = $ionicPopup.alert({
+              title: 'Thông báo',
+              template: 'Có đơn hàng mới cần giao'
+          });
+          alertPopup.then(function(res) {
+              $state.go('orders');
+          });
         }
       },
       function(msg){
