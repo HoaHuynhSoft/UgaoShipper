@@ -27,7 +27,7 @@ angular.module('app.controllers', [])
       }
       UserService.getShipper(user.UserName) // lấy user bằng user name
         .then(function success(data){
-            if((user.UserName == data.UserName) && (user.Pass == data.Pass) && data.Type ==3){
+            if(data!=null && user.UserName == data.UserName && user.Pass == data.Pass && data.Type ==3){
               
               $window.localStorage['username'] = user.UserName;
               $window.localStorage['pass'] = user.Pass;
@@ -47,12 +47,10 @@ angular.module('app.controllers', [])
                 sharedUtils.showAlert("warning","Sai tài khoản và mật khẩu");
               }
         }, function error(msg){
+          sharedUtils.showAlert("warning","Không thể kết nối tới máy chủ");
           console.log(msg);
         });
     };
-
-
-
 })
 
 .controller('indexCtrl', function($scope,$window,$rootScope,sharedUtils,$ionicHistory,$state,$ionicSideMenuDelegate) {
